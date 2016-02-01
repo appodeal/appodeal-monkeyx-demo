@@ -61,7 +61,7 @@ Class Game Extends App
 		buttonBannerShow.Text = "Banner show"
 		buttonBannerHide.Text = "Banner hide"
 		buttonInterstitial.Text = "Interstitial"
-		buttonVideo.Text = "Video"
+		buttonVideo.Text = "Skippable Video"
 		buttonInterstitialOrVideo.Text = "Rewarded Video"
 		
 		widgets.Attach(buttonInit)
@@ -82,7 +82,8 @@ Class Game Extends App
 		
 		If buttonInit.hit
 		  'Appodeal.initialize("dee74c5129f53fc629a44a690a02296694e3eef99f2d3a5f")
-		  Appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", AdType.ALL)
+		  Appodeal.confirm(AdType.SKIPPABLE_VIDEO)
+		  Appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", AdType.BANNER | AdType.SKIPPABLE_VIDEO | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO)
 		End If
 		
 		If buttonBannerShow.hit
@@ -98,7 +99,7 @@ Class Game Extends App
 		End If
 		
 		If buttonVideo.hit
-		  Appodeal.show(AdType.VIDEO)
+		  Appodeal.show(AdType.SKIPPABLE_VIDEO)
 		End If
 		
 		If buttonInterstitialOrVideo.hit

@@ -18,6 +18,10 @@ class BBAppodeal {
 		return Appodeal.show(activity, adType);
 	}
 	
+	public void confirm(int adType){
+		Appodeal.confirm(adType);
+	}
+	
 	public boolean showWithPriceFloor(int adType){
 		return Appodeal.showWithPriceFloor(activity, adType);
 	}
