@@ -6,8 +6,9 @@ const int BANNER        = 4;
 const int BANNER_BOTTOM = 8;
 const int BANNER_TOP    = 16;
 const int BANNER_CENTER = 32;
-const int ALL           = 127;
-const int ANY           = 127;
+const int BANNER_CENTER = 32;
+const int REWARDED_VIDEO = 128;
+const int NON_SKIPPABLE_VIDEO = 128;
 
 void showAlert(NSString* message)
 {
@@ -122,5 +123,3 @@ void BBAppodeal::disableNetwork(String network) {
 void BBAppodeal::disableLocationPermissionCheck() {
     [Appodeal disableLocationPermissionCheck];
 }
-
-//void

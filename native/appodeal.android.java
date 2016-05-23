@@ -18,12 +18,12 @@ class BBAppodeal {
 		return Appodeal.show(activity, adType);
 	}
 	
-	public void confirm(int adType){
-		Appodeal.confirm(adType);
+	public boolean show(int adType, String placement){
+		return Appodeal.show(activity, adType, placement);
 	}
 	
-	public boolean showWithPriceFloor(int adType){
-		return Appodeal.showWithPriceFloor(activity, adType);
+	public void confirm(int adType){
+		Appodeal.confirm(adType);
 	}
 	
 	public void cache(int adType){
@@ -36,10 +36,6 @@ class BBAppodeal {
 	
 	public boolean isLoaded(int adType){
 		return Appodeal.isLoaded(adType);
-	}
-	
-	public boolean isLoadedWithPriceFloor(int adType){
-		return Appodeal.isLoadedWithPriceFloor(adType);
 	}
 	
 	public boolean isPrecache(int adType){
@@ -64,6 +60,26 @@ class BBAppodeal {
 	
 	public void disableLocationPermissionCheck(){
 		Appodeal.disableLocationPermissionCheck();
+	}
+	
+	public void disableWriteExternalStoragePermissionCheck(){
+		Appodeal.disableWriteExternalStoragePermissionCheck();
+	}
+	
+	public void setCustomSegment(String name, boolean value){
+		Appodeal.setCustomSegment(name, value);
+	}
+	
+	public void setCustomSegment(String name, int value){
+		Appodeal.setCustomSegment(name, value);
+	}
+	
+	public void setCustomSegment(String name, double value){
+		Appodeal.setCustomSegment(name, value);
+	}
+	
+	public void setCustomSegment(String name, String value){
+		Appodeal.setCustomSegment(name, value);
 	}
 	
 	public void setTesting(boolean state){

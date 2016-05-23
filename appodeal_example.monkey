@@ -30,7 +30,7 @@ Class Game Extends App
 	Field buttonBannerHide:PushButton
 	Field buttonInterstitial:PushButton
 	Field buttonVideo:PushButton
-	Field buttonInterstitialOrVideo:PushButton
+	Field buttonRewardedVideo:PushButton
 	Field Cursor:= New MousePointer()
 	Field Appodeal:AdAppodeal
 	Field windowWidth:Int
@@ -55,21 +55,21 @@ Class Game Extends App
 		buttonBannerHide = New PushButton(10, 2 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
 		buttonInterstitial = New PushButton(10, 3 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
 		buttonVideo = New PushButton(10, 4 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
-		buttonInterstitialOrVideo = New PushButton(10, 5 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
+		buttonRewardedVideo = New PushButton(10, 5 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
 		
 		buttonInit.Text = "Init"
 		buttonBannerShow.Text = "Banner show"
 		buttonBannerHide.Text = "Banner hide"
 		buttonInterstitial.Text = "Interstitial"
 		buttonVideo.Text = "Skippable Video"
-		buttonInterstitialOrVideo.Text = "Rewarded Video"
+		buttonRewardedVideo.Text = "Rewarded Video"
 		
 		widgets.Attach(buttonInit)
 		widgets.Attach(buttonBannerShow)
 		widgets.Attach(buttonBannerHide)
 		widgets.Attach(buttonInterstitial)
 		widgets.Attach(buttonVideo)
-		widgets.Attach(buttonInterstitialOrVideo)
+		widgets.Attach(buttonRewardedVideo)
 
 		Return 0
 	End Method
@@ -87,23 +87,27 @@ Class Game Extends App
 		End If
 		
 		If buttonBannerShow.hit
-		  Appodeal.show(AdType.BANNER_BOTTOM)
+		  Appodeal.show(AdType.BANNER_BOTTOM, "bottom_banner")
 		End If
 		
 		If buttonBannerHide.hit		
 		  Appodeal.hide(AdType.BANNER)
+		  Appodeal.setCustomSegment("segment", True)
 		End If
 		
 		If buttonInterstitial.hit
 		  Appodeal.show(AdType.INTERSTITIAL)
+		  Appodeal.setCustomSegment("segment", 32)
 		End If
 		
 		If buttonVideo.hit
 		  Appodeal.show(AdType.SKIPPABLE_VIDEO)
+		  Appodeal.setCustomSegment("segment", 32.5)
 		End If
 		
-		If buttonInterstitialOrVideo.hit
+		If buttonRewardedVideo.hit
 		  Appodeal.show(AdType.REWARDED_VIDEO)
+		  Appodeal.setCustomSegment("segment", "custom")
 		End If
 		
 		Return 0		

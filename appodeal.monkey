@@ -6,14 +6,15 @@
 
 Import "native/appodeal.android.java"
 
-#LIBS+="${CD}/native/android/android-support-v4-22.2.1.jar"
-#LIBS+="${CD}/native/android/appodeal-1.14.6.jar"
+#LIBS+="${CD}/native/android/android-support-v4-23.1.2-trimmed.jar"
+#LIBS+="${CD}/native/android/appodeal-1.14.14.jar"
 #LIBS+="${CD}/native/android/google-play-services.jar"
-#LIBS+="${CD}/native/android/inmobi-5.2.0.jar"
-#LIBS+="${CD}/native/android/yandex-metrica-2.30.jar"
+#LIBS+="${CD}/native/android/flurry-analytics-6.2.0.jar"
+#LIBS+="${CD}/native/android/inmobi-5.3.0.jar"
+#LIBS+="${CD}/native/android/yandex-metrica-2.41.jar"
 #LIBS+="${CD}/native/android/applovin-6.1.5.jar"
-#LIBS+="${CD}/native/android/chartboost-6.2.0.jar"
-#LIBS+="${CD}/native/android/my-target-4.2.0.jar"
+#LIBS+="${CD}/native/android/chartboost-6.4.1.jar"
+#LIBS+="${CD}/native/android/my-target-4.3.10.jar"
 #LIBS+="${CD}/native/android/unity-ads-1.4.7.jar"
 
 #ANDROID_MANIFEST+="<uses-permission android:name=~qandroid.permission.ACCESS_NETWORK_STATE~q /><uses-permission android:name=~qandroid.permission.INTERNET~q /><uses-permission android:name=~qandroid.permission.ACCESS_COARSE_LOCATION~q /><uses-permission android:name=~qandroid.permission.WRITE_EXTERNAL_STORAGE~q />"
@@ -35,9 +36,10 @@ Import "native/appodeal.android.java"
     <activity android:name=~qcom.amazon.device.ads.AdActivity~q android:configChanges=~qkeyboardHidden|orientation|screenSize~q android:theme=~q@android:style/Theme.Translucent~q />
     <activity android:name=~qru.mail.android.mytarget.ads.MyTargetActivity~q android:configChanges=~qkeyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize~q />
     <activity android:name=~qorg.nexage.sourcekit.vast.activity.VPAIDActivity~q android:theme=~q@android:style/Theme.NoTitleBar.Fullscreen~q />
-    <activity android:name=~qorg.nexage.sourcekit.vast.activity.VASTActivity~q android:theme=~q@android:style/Theme.NoTitleBar.Fullscreen~q />
+	<activity android:name=~qorg.nexage.sourcekit.vast.activity.VASTActivity~q android:theme=~q@android:style/Theme.NoTitleBar.Fullscreen~q />
     <activity android:name=~qcom.appodeal.ads.networks.SpotXActivity~q android:theme=~q@android:style/Theme.NoTitleBar.Fullscreen~q />
-    <activity android:name=~qcom.facebook.ads.InterstitialActivity~q android:configChanges=~qkeyboardHidden|orientation|screenSize~q />
+    <activity android:name=~qcom.facebook.ads.InterstitialAdActivity~q android:configChanges=~qkeyboardHidden|orientation|screenSize~q />
+    <activity android:name=~qcom.appodeal.ads.networks.vpaid.VPAIDActivity~q android:theme=~q@android:style/Theme.NoTitleBar.Fullscreen~q />
     <activity android:name=~qcom.unity3d.ads.android.view.UnityAdsFullscreenActivity~q android:configChanges=~qfontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen~q android:theme=~q@android:style/Theme.NoTitleBar.Fullscreen~q android:hardwareAccelerated=~qtrue~q />
     <activity android:name=~qcom.unity3d.ads.android2.view.UnityAdsFullscreenActivity~q android:configChanges=~qfontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen~q android:theme=~q@android:style/Theme.NoTitleBar.Fullscreen~q android:hardwareAccelerated=~qtrue~q />
     <activity android:name=~qcom.jirbo.adcolony.AdColonyOverlay~q android:configChanges=~qkeyboardHidden|orientation|screenSize~q android:theme=~q@android:style/Theme.Translucent.NoTitleBar.Fullscreen~q />
@@ -52,7 +54,7 @@ Import "native/appodeal.android.java"
         <action android:name=~qcom.yandex.metrica.IMetricaService~q />
         <category android:name=~qandroid.intent.category.DEFAULT~q />
       </intent-filter>
-      <meta-data android:name=~qmetrica:api:level~q android:value=~q32~q />
+      <meta-data android:name=~qmetrica:api:level~q android:value=~q44~q />
     </service>
     <receiver android:name=~qcom.yandex.metrica.MetricaEventHandler~q android:enabled=~qtrue~q android:exported=~qtrue~q>
       <intent-filter>
@@ -67,7 +69,7 @@ Import "native/appodeal.android.java"
       </intent-filter>
     </receiver>
     <service android:enabled=~qtrue~q android:name=~qcom.inmobi.signals.activityrecognition.ActivityRecognitionManager~q />
-    <activity android:name=~qcom.flurry.android.FlurryFullscreenTakeoverActivity~q android:configChanges=~qkeyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize~q />
+    <activity android:name=~qcom.flurry.android.FlurryFullscreenTakeoverActivity~q android:configChanges=~qkeyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize~q />"
 
 #Elseif TARGET="ios"
 
@@ -83,20 +85,24 @@ Class AdAppodeal Extends Null="BBAppodeal"
 		
 	Method initialize:Void(appKey:String,adType:Int)
 	Method show:Bool(adType:Int)
-	Method showWithPriceFloor:Bool(adType:Int)
+	Method show:Bool(adType:Int, placement:String)
 	Method cache:Void(adType:Int)
 	Method hide:Void(adType:Int)
 	Method confirm:Void(adType:Int)
 	Method isLoaded:Bool(adType:Int)
-	Method isLoadedWithPriceFloor:Bool(adType:Int)
 	Method isPrecache:Bool(adType:Int)
 	Method setAutoCache:Void(adType:Int,state:Bool)
 	Method setOnLoadedTriggerBoth:Void(adType:Int,state:Bool)
 	Method disableNetwork:Void(network:String)
 	Method disableNetwork:Void(network:String,adType:Int)
 	Method disableLocationPermissionCheck:Void()
+	Method disableWriteExternalStoragePermissionCheck:Void()
 	Method setTesting:Void(state:Bool)
 	Method setLogging:Void(state:Bool)
+	Method setCustomSegment:Void(name:String,value:Bool)
+	Method setCustomSegment:Void(name:String,value:Int)
+	Method setCustomSegment:Void(name:String,value:String)
+	Method setCustomSegment:Void(name:String,value:Float)
 
 End
 
