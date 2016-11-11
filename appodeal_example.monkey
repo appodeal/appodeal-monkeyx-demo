@@ -18,6 +18,8 @@ Import SimpleUI.widgetManager
 Import SimpleUI.Scrollers
 Import SimpleUI.panel
 
+Global interstitialState:=0 '0 - not loaded; 1 - loading; 2 - loaded
+
 Class MyBannerCallbacks Extends AdBannerCallbacks
 	Method onBannerClicked:Void()
 		AdAppodeal.GetAppodeal().showToast("Clicked")
@@ -41,9 +43,11 @@ Class MyInterstitialCallbacks Extends AdInterstitialCallbacks
 		AdAppodeal.GetAppodeal().showToast("interstitial closed")
 	End
 	Method onInterstitialLoaded:Void(isPrecache:Bool)
+		interstitialState = 2
 		AdAppodeal.GetAppodeal().showToast("interstitial loaded. precache: " + String(Int(isPrecache)))
 	End
 	Method onInterstitialFailedToLoad:Void()
+		interstitialState = 0
 		AdAppodeal.GetAppodeal().showToast("interstitial failed to load")
 	End
 	Method onInterstitialShown:Void()
@@ -179,6 +183,7 @@ Class Game Extends App
 		  Appodeal.setSkippableVideoCallbacks(skippableCallbacks)
 		  Appodeal.setRewardedVideoCallbacks(rewardedCallbacks)
 		  
+		  Appodeal.setAutoCache(AdType.INTERSTITIAL, False)
 		  Appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", AdType.BANNER | AdType.SKIPPABLE_VIDEO | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO)
 		End If
 		
@@ -192,8 +197,15 @@ Class Game Extends App
 		End If
 		
 		If buttonInterstitial.hit
-		  Appodeal.show(AdType.INTERSTITIAL)
-		  Appodeal.setCustomRule("segment", 32)
+		  If interstitialState = 0
+		    interstitialState = 1
+		    Appodeal.cache(AdType.INTERSTITIAL)
+		  End If
+		  If interstitialState = 2
+		    interstitialState = 0
+		    Appodeal.show(AdType.INTERSTITIAL, "main_menu_placement")
+		    Appodeal.setCustomRule("segment", 32)
+		  End If
 		End If
 		
 		If buttonVideo.hit
@@ -202,8 +214,10 @@ Class Game Extends App
 		End If
 		
 		If buttonRewardedVideo.hit
-		  Appodeal.show(AdType.REWARDED_VIDEO)
-		  Appodeal.setCustomRule("segment", "custom")
+		  If Appodeal.isLoaded(AdType.REWARDED_VIDEO)
+		    Appodeal.show(AdType.REWARDED_VIDEO)
+		    Appodeal.setCustomRule("segment", "custom")
+		  End If
 		End If
 		
 		Return 0		
