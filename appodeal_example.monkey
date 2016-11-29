@@ -53,23 +53,8 @@ Class MyInterstitialCallbacks Extends AdInterstitialCallbacks
 	Method onInterstitialShown:Void()
 		AdAppodeal.GetAppodeal().showToast("interstitial shown")
 	End
-End
-
-Class MySkippableCallbacks Extends AdSkippableVideoCallbacks
-	Method onSkippableVideoClosed:Void(finished:Bool)
-		AdAppodeal.GetAppodeal().showToast("skippable video closed. finished: " + String(Int(finished)))
-	End
-	Method onSkippableVideoFailedToLoad:Void()
-		AdAppodeal.GetAppodeal().showToast("skippable video failed to load")
-	End
-	Method onSkippableVideoFinished:Void()
-		AdAppodeal.GetAppodeal().showToast("skippable video finished")
-	End
-	Method onSkippableVideoLoaded:Void()
-		AdAppodeal.GetAppodeal().showToast("skippable video loaded")
-	End
-	Method onSkippableVideoShown:Void()
-		AdAppodeal.GetAppodeal().showToast("skippable video shown")
+	Method onInterstitialFinished:Void()
+		AdAppodeal.GetAppodeal().showToast("interstitial finished")
 	End
 End
 
@@ -102,14 +87,12 @@ Class Game Extends App
 	Field buttonBannerShow:PushButton
 	Field buttonBannerHide:PushButton
 	Field buttonInterstitial:PushButton
-	Field buttonVideo:PushButton
 	Field buttonRewardedVideo:PushButton
 	Field Cursor:= New MousePointer()
 	Field Appodeal:AdAppodeal
 	Field userSettings:AdUserSettings
 	Field bannerCallbacks:MyBannerCallbacks = New MyBannerCallbacks
 	Field interstitialCallbacks:MyInterstitialCallbacks = New MyInterstitialCallbacks
-	Field skippableCallbacks:MySkippableCallbacks = New MySkippableCallbacks
 	Field rewardedCallbacks:MyRewardedCallbacks = New MyRewardedCallbacks
 	Field windowWidth:Int
 	Field windowHeight:Int
@@ -132,21 +115,18 @@ Class Game Extends App
 		buttonBannerShow = New PushButton(10, 1 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
 		buttonBannerHide = New PushButton(10, 2 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
 		buttonInterstitial = New PushButton(10, 3 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
-		buttonVideo = New PushButton(10, 4 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
-		buttonRewardedVideo = New PushButton(10, 5 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
+		buttonRewardedVideo = New PushButton(10, 4 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
 		
 		buttonInit.Text = "Init"
 		buttonBannerShow.Text = "Banner show"
 		buttonBannerHide.Text = "Banner hide"
 		buttonInterstitial.Text = "Interstitial"
-		buttonVideo.Text = "Skippable Video"
 		buttonRewardedVideo.Text = "Rewarded Video"
 		
 		widgets.Attach(buttonInit)
 		widgets.Attach(buttonBannerShow)
 		widgets.Attach(buttonBannerHide)
 		widgets.Attach(buttonInterstitial)
-		widgets.Attach(buttonVideo)
 		widgets.Attach(buttonRewardedVideo)
 
 		Return 0
@@ -160,7 +140,7 @@ Class Game Extends App
 		
 		If buttonInit.hit
 		  'Appodeal.initialize("dee74c5129f53fc629a44a690a02296694e3eef99f2d3a5f")
-		  Appodeal.confirm(AdType.SKIPPABLE_VIDEO)
+		  Appodeal.confirm(AdType.INTERSTITIAL)
 		  
 		  Appodeal.setLogLevel(AdLogLevel.verbose)
 		  Appodeal.setSmartBanners(False)
@@ -180,11 +160,10 @@ Class Game Extends App
 		  
 		  Appodeal.setBannerCallbacks(bannerCallbacks)
 		  Appodeal.setInterstitialCallbacks(interstitialCallbacks)
-		  Appodeal.setSkippableVideoCallbacks(skippableCallbacks)
 		  Appodeal.setRewardedVideoCallbacks(rewardedCallbacks)
 		  
 		  Appodeal.setAutoCache(AdType.INTERSTITIAL, False)
-		  Appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", AdType.BANNER | AdType.SKIPPABLE_VIDEO | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO)
+		  Appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", AdType.BANNER | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO)
 		End If
 		
 		If buttonBannerShow.hit
@@ -206,11 +185,6 @@ Class Game Extends App
 		    Appodeal.show(AdType.INTERSTITIAL, "main_menu_placement")
 		    Appodeal.setCustomRule("segment", 32)
 		  End If
-		End If
-		
-		If buttonVideo.hit
-		  Appodeal.show(AdType.SKIPPABLE_VIDEO)
-		  Appodeal.setCustomRule("segment", 32.5)
 		End If
 		
 		If buttonRewardedVideo.hit

@@ -9,18 +9,17 @@ Import "native/usersettings.android.java"
 Import "native/callbacks/bannercallbacks.android.java"
 Import "native/callbacks/interstitialcallbacks.android.java"
 Import "native/callbacks/nonskippablevideocallbacks.android.java"
-Import "native/callbacks/skippablevideocallbacks.android.java"
 Import "native/callbacks/rewardedvideocallbacks.android.java"
 
 #LIBS+="${CD}/native/android/android-support-v4-23.1.2-trimmed.jar"
-#LIBS+="${CD}/native/android/appodeal-1.15.7.jar"
+#LIBS+="${CD}/native/android/appodeal-1.16.jar"
 #LIBS+="${CD}/native/android/google-play-services.jar"
-#LIBS+="${CD}/native/android/flurry-analytics-6.5.0.jar"
-#LIBS+="${CD}/native/android/yandex-metrica-2.41.jar"
-#LIBS+="${CD}/native/android/applovin-6.3.0.jar"
-#LIBS+="${CD}/native/android/chartboost-6.5.1.jar"
-#LIBS+="${CD}/native/android/my-target-4.5.10.jar"
-#LIBS+="${CD}/native/android/unity-ads-2.0.4.jar"
+#LIBS+="${CD}/native/android/flurry-analytics-6.6.0.jar"
+#LIBS+="${CD}/native/android/yandex-metrica-2.51.jar"
+#LIBS+="${CD}/native/android/applovin-6.3.2.jar"
+#LIBS+="${CD}/native/android/chartboost-6.6.1.jar"
+#LIBS+="${CD}/native/android/my-target-4.5.15.jar"
+#LIBS+="${CD}/native/android/unity-ads-2.0.5.jar"
 
 #ANDROID_MANIFEST_MAIN+="<uses-permission android:name=~qandroid.permission.ACCESS_NETWORK_STATE~q /><uses-permission android:name=~qandroid.permission.INTERNET~q /><uses-permission android:name=~qandroid.permission.ACCESS_COARSE_LOCATION~q /><uses-permission android:name=~qandroid.permission.WRITE_EXTERNAL_STORAGE~q />"
 #ANDROID_MANIFEST_APPLICATION+="
@@ -175,7 +174,7 @@ Class AdAppodeal Extends Null="BBAppodeal"
 	Method isLoaded:Bool(adType:Int)
 	Method isPrecache:Bool(adType:Int)
 	Method setAutoCache:Void(adType:Int,state:Bool)
-	Method setOnLoadedTriggerBoth:Void(adType:Int,state:Bool)
+	Method setTriggerOnLoadedOnPrecache:Void(adType:Int,state:Bool)
 	Method disableNetwork:Void(network:String)
 	Method disableNetwork:Void(network:String,adType:Int)
 	Method disableLocationPermissionCheck:Void()
@@ -195,7 +194,6 @@ Class AdAppodeal Extends Null="BBAppodeal"
 	Method setBannerCallbacks:Void(callbacks:AdBannerCallbacks)
 	Method setInterstitialCallbacks(callbacks:AdInterstitialCallbacks)
 	Method setNonSkippableVideoCallbacks(callbacks:AdNonSkippableVideoCallbacks)
-	Method setSkippableVideoCallbacks(callbacks:AdSkippableVideoCallbacks)
 	Method setRewardedVideoCallbacks(callbacks:AdRewardedVideoCallbacks)
 	
 	Method showToast:Void(message:String)
@@ -233,6 +231,7 @@ Class AdInterstitialCallbacks Extends Null="BBInterstitialCallbacks"
 	Method onInterstitialLoaded:Void(isPrecache:Bool) Abstract
 	Method onInterstitialFailedToLoad:Void() Abstract
 	Method onInterstitialShown:Void() Abstract
+	Method onInterstitialFinished:Void() Abstract
 End
 
 Extern
@@ -245,13 +244,6 @@ Class AdNonSkippableVideoCallbacks Extends Null="BBNonSkippableVideoCallbacks"
 End
 
 Extern
-Class AdSkippableVideoCallbacks Extends Null="BBSkippableVideoCallbacks"
-	Method onSkippableVideoClosed:Void(finished:Bool) Abstract
-	Method onSkippableVideoFailedToLoad:Void() Abstract
-	Method onSkippableVideoFinished:Void() Abstract
-	Method onSkippableVideoLoaded:Void() Abstract
-	Method onSkippableVideoShown:Void() Abstract
-End
 
 Extern
 Class AdRewardedVideoCallbacks Extends Null="BBRewardedVideoCallbacks"
@@ -265,8 +257,7 @@ End
 Public
 Class AdType
 	Const NONE:=0
-	Const INTERSTITIAL:=1
-	Const SKIPPABLE_VIDEO:=2
+	Const INTERSTITIAL:=3
 	Const BANNER:=4
 	Const BANNER_BOTTOM:=8
 	Const BANNER_TOP:=16
