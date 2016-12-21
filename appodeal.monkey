@@ -1,5 +1,5 @@
 #If TARGET<>"android" And TARGET<>"ios"
-#Error "The Admob module is only available on the android and ios targets"
+#Error "Appodeal module is only available on the android and ios targets"
 #End
 
 #If TARGET="android"
@@ -12,9 +12,7 @@ Import "native/callbacks/nonskippablevideocallbacks.android.java"
 Import "native/callbacks/skippablevideocallbacks.android.java"
 Import "native/callbacks/rewardedvideocallbacks.android.java"
 
-#LIBS+="${CD}/native/android/android-support-v4-23.1.2-trimmed.jar"
-#LIBS+="${CD}/native/android/appodeal-1.15.7.jar"
-#LIBS+="${CD}/native/android/google-play-services.jar"
+#LIBS+="${CD}/native/android/appodeal-1.15.8.jar"
 #LIBS+="${CD}/native/android/flurry-analytics-6.5.0.jar"
 #LIBS+="${CD}/native/android/yandex-metrica-2.41.jar"
 #LIBS+="${CD}/native/android/applovin-6.3.0.jar"
@@ -159,9 +157,38 @@ Import "native/callbacks/rewardedvideocallbacks.android.java"
 
 Import "native/appodeal.ios.cpp"
 
-#end 
-Extern
+#LIBS+="CFNetwork.framework"
+#LIBS+="QuartzCore.framework"
+#LIBS+="CoreMedia.framework"
+#LIBS+="UIKit.framework"
+#LIBS+="CoreTelephony.framework"
+#LIBS+="EventKitUI.framework"
+#LIBS+="EventKit.framework"
+#LIBS+="MessageUI.framework"
+#LIBS+="Security.framework"
+#LIBS+="CoreLocation.framework"
+#LIBS+="MobileCoreServices.framework"
+#LIBS+="MediaPlayer.framework"
+#LIBS+="Foundation.framework"
+#LIBS+="CoreGraphics.framework"
+#LIBS+="AudioToolbox.framework"
+#LIBS+="MediaPlayer.framework"
+#LIBS+="AVFoundation.framework"
+#LIBS+="MediaPlayer.framework"
+#LIBS+="SystemConfiguration.framework"
+#LIBS+="AdSupport.framework"
+#LIBS+="StoreKit.framework"
+#LIBS+="Social.framework"
+#LIBS+="GLKit.framework"
+#LIBS+="CoreMotion.framework"
+#LIBS+="JavaScriptCore.framework"
+#LIBS+="SafariServices.framework"
+#LIBS+="WebKit.framework"
 
+#end 
+
+
+Extern
 Class AdAppodeal Extends Null="BBAppodeal"
 
 	Function GetAppodeal:AdAppodeal()
@@ -175,36 +202,35 @@ Class AdAppodeal Extends Null="BBAppodeal"
 	Method isLoaded:Bool(adType:Int)
 	Method isPrecache:Bool(adType:Int)
 	Method setAutoCache:Void(adType:Int,state:Bool)
-	Method setOnLoadedTriggerBoth:Void(adType:Int,state:Bool)
 	Method disableNetwork:Void(network:String)
 	Method disableNetwork:Void(network:String,adType:Int)
 	Method disableLocationPermissionCheck:Void()
 	Method disableWriteExternalStoragePermissionCheck:Void()
+	Method setBannerAnimation:Void(state:Bool)
+	Method setSmartBanners:Void(state:Bool)
+	Method trackInAppPurchase:Void(amount:Float,currency:String)
 	Method setTesting:Void(state:Bool)
 	Method setLogLevel:Void(level:String)
+	Method setBannerBackground:Void(state:Bool)
+	Method set728x90Banners:Void(state:Bool)
+	Method setOnLoadedTriggerBoth:Void(adType:Int,state:Bool)
+	Method requestAndroidMPermissions:Void()
+	Method showMessage:Void(message:String)
 	Method setCustomRule:Void(name:String,value:Bool)
 	Method setCustomRule:Void(name:String,value:Int)
 	Method setCustomRule:Void(name:String,value:String)
 	Method setCustomRule:Void(name:String,value:Float)
-	Method requestAndroidMPermissions:Void()
-	Method set728x90Banners:Void(state:Bool)
-	Method setBannerAnimation:Void(state:Bool)
-	Method setSmartBanners:Void(state:Bool)
-	Method trackInAppPurchase:Void(amount:Float,currency:String)
-	Method getUserSettings:AdUserSettings()
-	Method setBannerCallbacks:Void(callbacks:AdBannerCallbacks)
+	Method setBannerCallbacks(callbacks:AdBannerCallbacks)
 	Method setInterstitialCallbacks(callbacks:AdInterstitialCallbacks)
 	Method setNonSkippableVideoCallbacks(callbacks:AdNonSkippableVideoCallbacks)
 	Method setSkippableVideoCallbacks(callbacks:AdSkippableVideoCallbacks)
 	Method setRewardedVideoCallbacks(callbacks:AdRewardedVideoCallbacks)
-	
-	Method showToast:Void(message:String)
+	Method GetUserSettings:AdUserSettings()
 
 End
 
 Extern
 Class AdUserSettings Extends Null="BBUserSettings"
-	
 	Method setAge:Void(age:Int)
 	Method setAlcohol:Void(alcohol:Int)
 	Method setBirthday:Void(bday:String)
@@ -215,14 +241,13 @@ Class AdUserSettings Extends Null="BBUserSettings"
 	Method setRelation:Void(relation:Int)
 	Method setSmoking:Void(smoking:Int)
 	Method setUserId:Void(userId:String)
-	
 End
 
 Extern
 Class AdBannerCallbacks Extends Null="BBBannerCallbacks"
 	Method onBannerClicked:Void() Abstract
 	Method onBannerFailedToLoad:Void() Abstract
-	Method onBannerLoaded:Void(height:Int, isPrecache:Bool) Abstract
+	Method onBannerLoaded:Void(isPrecache:Bool) Abstract
 	Method onBannerShown:Void() Abstract
 End
 
@@ -237,7 +262,7 @@ End
 
 Extern
 Class AdNonSkippableVideoCallbacks Extends Null="BBNonSkippableVideoCallbacks"
-	Method onNonSkippableVideoClosed:Void(finished:Bool) Abstract
+	Method onNonSkippableVideoClosed:Void() Abstract
 	Method onNonSkippableVideoFailedToLoad:Void() Abstract
 	Method onNonSkippableVideoFinished:Void() Abstract
 	Method onNonSkippableVideoLoaded:Void() Abstract
@@ -246,7 +271,7 @@ End
 
 Extern
 Class AdSkippableVideoCallbacks Extends Null="BBSkippableVideoCallbacks"
-	Method onSkippableVideoClosed:Void(finished:Bool) Abstract
+	Method onSkippableVideoClosed:Void() Abstract
 	Method onSkippableVideoFailedToLoad:Void() Abstract
 	Method onSkippableVideoFinished:Void() Abstract
 	Method onSkippableVideoLoaded:Void() Abstract
@@ -255,7 +280,7 @@ End
 
 Extern
 Class AdRewardedVideoCallbacks Extends Null="BBRewardedVideoCallbacks"
-	Method onRewardedVideoClosed:Void(finished:Bool) Abstract
+	Method onRewardedVideoClosed:Void() Abstract
 	Method onRewardedVideoFailedToLoad:Void() Abstract
 	Method onRewardedVideoFinished:Void(amount:Int,name:String) Abstract
 	Method onRewardedVideoLoaded:Void() Abstract
@@ -271,7 +296,11 @@ Class AdType
 	Const BANNER_BOTTOM:=8
 	Const BANNER_TOP:=16
 	Const REWARDED_VIDEO:=128
+#If TARGET="android"
 	Const NON_SKIPPABLE_VIDEO:=128
+#Elseif TARGET="ios"
+	Const NON_SKIPPABLE_VIDEO:=256
+#End
 End
 
 Public

@@ -22,72 +22,72 @@ Global interstitialState:=0 '0 - not loaded; 1 - loading; 2 - loaded
 
 Class MyBannerCallbacks Extends AdBannerCallbacks
 	Method onBannerClicked:Void()
-		AdAppodeal.GetAppodeal().showToast("Clicked")
+		AdAppodeal.GetAppodeal().showMessage("Clicked")
 	End
 	Method onBannerFailedToLoad:Void()
-		AdAppodeal.GetAppodeal().showToast("failed to load")
+		AdAppodeal.GetAppodeal().showMessage("failed to load")
 	End
-	Method onBannerLoaded:Void(height:Int, isPrecache:Bool)
-		AdAppodeal.GetAppodeal().showToast("banner loaded. height: " + height + ", precache: " + String(Int(isPrecache)))
+	Method onBannerLoaded:Void(isPrecache:Bool)
+		AdAppodeal.GetAppodeal().showMessage(String(Int(isPrecache)))
 	End
 	Method onBannerShown:Void()
-		AdAppodeal.GetAppodeal().showToast("banner shown")
+		AdAppodeal.GetAppodeal().showMessage("banner shown")
 	End
 End
 
 Class MyInterstitialCallbacks Extends AdInterstitialCallbacks
 	Method onInterstitialClicked:Void()
-		AdAppodeal.GetAppodeal().showToast("interstitial clicked")
+		AdAppodeal.GetAppodeal().showMessage("interstitial clicked")
 	End
 	Method onInterstitialClosed:Void()
-		AdAppodeal.GetAppodeal().showToast("interstitial closed")
+		AdAppodeal.GetAppodeal().showMessage("interstitial closed")
 	End
 	Method onInterstitialLoaded:Void(isPrecache:Bool)
 		interstitialState = 2
-		AdAppodeal.GetAppodeal().showToast("interstitial loaded. precache: " + String(Int(isPrecache)))
+		AdAppodeal.GetAppodeal().showMessage("interstitial loaded. precache: " + String(Int(isPrecache)))
 	End
 	Method onInterstitialFailedToLoad:Void()
 		interstitialState = 0
-		AdAppodeal.GetAppodeal().showToast("interstitial failed to load")
+		AdAppodeal.GetAppodeal().showMessage("interstitial failed to load")
 	End
 	Method onInterstitialShown:Void()
-		AdAppodeal.GetAppodeal().showToast("interstitial shown")
+		AdAppodeal.GetAppodeal().showMessage("interstitial shown")
 	End
 End
 
 Class MySkippableCallbacks Extends AdSkippableVideoCallbacks
-	Method onSkippableVideoClosed:Void(finished:Bool)
-		AdAppodeal.GetAppodeal().showToast("skippable video closed. finished: " + String(Int(finished)))
+	Method onSkippableVideoClosed:Void()
+		AdAppodeal.GetAppodeal().showMessage("skippable video closed")
 	End
 	Method onSkippableVideoFailedToLoad:Void()
-		AdAppodeal.GetAppodeal().showToast("skippable video failed to load")
+		AdAppodeal.GetAppodeal().showMessage("skippable video failed to load")
 	End
 	Method onSkippableVideoFinished:Void()
-		AdAppodeal.GetAppodeal().showToast("skippable video finished")
+		AdAppodeal.GetAppodeal().showMessage("skippable video finished")
 	End
 	Method onSkippableVideoLoaded:Void()
-		AdAppodeal.GetAppodeal().showToast("skippable video loaded")
+		AdAppodeal.GetAppodeal().showMessage("skippable video loaded")
 	End
 	Method onSkippableVideoShown:Void()
-		AdAppodeal.GetAppodeal().showToast("skippable video shown")
+		AdAppodeal.GetAppodeal().showMessage("skippable video shown")
 	End
 End
 
 Class MyRewardedCallbacks Extends AdRewardedVideoCallbacks
-	Method onRewardedVideoClosed:Void(finished:Bool) 
-		AdAppodeal.GetAppodeal().showToast("rewarded video closed. finished: " + String(Int(finished)))
+	Method onRewardedVideoClosed:Void() 
+		AdAppodeal.GetAppodeal().showMessage("rewarded video closed")
 	End
 	Method onRewardedVideoFailedToLoad:Void() 
-		AdAppodeal.GetAppodeal().showToast("rewarded video failed to load")
+		AdAppodeal.GetAppodeal().showMessage("rewarded video failed to load")
 	End
 	Method onRewardedVideoFinished:Void(amount:Int,name:String) 
-		AdAppodeal.GetAppodeal().showToast("rewarded video finished. amount: " + amount +", name: " + name)
+		AdAppodeal.GetAppodeal().showMessage("rewarded video finished. amount: " + amount +", name: " + name)
 	End
 	Method onRewardedVideoLoaded:Void()
-		AdAppodeal.GetAppodeal().showToast("rewarded video loaded")
+		AdAppodeal.GetAppodeal().showMessage("rewarded video loaded")
 	End
 	Method onRewardedVideoShown:Void() 
-		AdAppodeal.GetAppodeal().showToast("rewarded video shown")
+		AdAppodeal.GetAppodeal().showMessage("rewarded video shown")
 	End
 End
 
@@ -159,15 +159,16 @@ Class Game Extends App
 		widgets.PollAll()
 		
 		If buttonInit.hit
-		  'Appodeal.initialize("dee74c5129f53fc629a44a690a02296694e3eef99f2d3a5f")
+		  'Appodeal.initialize("722fb56678445f72fe2ec58b2fa436688b920835405d3ca6",AdType.BANNER | AdType.SKIPPABLE_VIDEO | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO)
+		  Appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f",AdType.BANNER | AdType.SKIPPABLE_VIDEO | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO)
 		  Appodeal.confirm(AdType.SKIPPABLE_VIDEO)
 		  
 		  Appodeal.setLogLevel(AdLogLevel.verbose)
 		  Appodeal.setSmartBanners(False)
-		  Appodeal.set728x90Banners(False)
+		  'Appodeal.set728x90Banners(False)
 		  Appodeal.setBannerAnimation(True)
 		  
-		  userSettings = Appodeal.getUserSettings()
+		  userSettings = Appodeal.GetUserSettings()
 		  userSettings.setAge(25)
 		  userSettings.setBirthday("17/06/1990")
 		  userSettings.setEmail("hi@appodeal.com")
@@ -184,7 +185,7 @@ Class Game Extends App
 		  Appodeal.setRewardedVideoCallbacks(rewardedCallbacks)
 		  
 		  Appodeal.setAutoCache(AdType.INTERSTITIAL, False)
-		  Appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", AdType.BANNER | AdType.SKIPPABLE_VIDEO | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO)
+		  'Appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", AdType.BANNER | AdType.SKIPPABLE_VIDEO | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO)
 		End If
 		
 		If buttonBannerShow.hit

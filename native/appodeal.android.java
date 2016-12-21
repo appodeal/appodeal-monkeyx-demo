@@ -124,15 +124,18 @@ class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippable
 		Appodeal.setSmartBanners(flag);
 	}
 	
+	public void setSmartBackground(boolean flag){
+		
+	}
+	
 	public void trackInAppPurchase(double amount, String currency) {
         Appodeal.trackInAppPurchase(activity, amount, currency);
     }
 	
-	public BBUserSettings getUserSettings(){
+	public BBUserSettings GetUserSettings(){
 		if(userSettings == null){
 			userSettings = new BBUserSettings(Appodeal.getUserSettings(activity));
 		}
-		
 		return userSettings;
 	}
 	
@@ -171,7 +174,7 @@ class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippable
 	@Override
 	public void onBannerLoaded(int height, boolean isPrecache) {
 		if(bannerCallbacks != null)
-			bannerCallbacks.onBannerLoaded(height, isPrecache);
+			bannerCallbacks.onBannerLoaded(isPrecache);
 	}
 
 	@Override
@@ -213,7 +216,7 @@ class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippable
 	@Override
 	public void onNonSkippableVideoClosed(boolean finished) {
 		if(nonSkippableCallbacks != null)
-			nonSkippableCallbacks.onNonSkippableVideoClosed(finished);
+			nonSkippableCallbacks.onNonSkippableVideoClosed();
 	}
 
 	@Override
@@ -243,7 +246,7 @@ class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippable
 	@Override
 	public void onSkippableVideoClosed(boolean finished) {
 		if(skippableCallbacks != null)
-			skippableCallbacks.onSkippableVideoClosed(finished);
+			skippableCallbacks.onSkippableVideoClosed();
 	}
 
 	@Override
@@ -273,7 +276,7 @@ class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippable
 	@Override
 	public void onRewardedVideoClosed(boolean finished) {
 		if(rewardedCallbacks != null)
-			rewardedCallbacks.onRewardedVideoClosed(finished);
+			rewardedCallbacks.onRewardedVideoClosed();
 	}
 
 	@Override
@@ -300,7 +303,7 @@ class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippable
 			rewardedCallbacks.onRewardedVideoShown();
 	}
 	
-	public void showToast(String msg){
+	public void showMessage(String msg){
 		Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
 	}
 	
