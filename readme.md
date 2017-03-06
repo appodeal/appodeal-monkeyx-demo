@@ -2,6 +2,8 @@
 
 This is official Appodeal Monkey X plugin
 
+# Android Instructions
+
 ## Download SDK
 [![](https://img.shields.io/badge/docs-android-green.svg)](https://www.appodeal.com/sdk/documentation?framework=12&full=1&platform=1)
 [![](https://img.shields.io/badge/docs-ios-green.svg)](https://www.appodeal.com/sdk/documentation?framework=12&full=1&platform=1)
@@ -11,15 +13,24 @@ Already included to module.
 
 ## Monkey X Android Integration
 
+### Monkey X Version
+This example was tested with versions MonkeyXPro78h and MonkeyXPro87b.
+
+### ANDROID_HOME
+Building library files requires the ANDROID_HOME enviroment variable to be set. Search Google for instructions on setting this up properly for your OS. If you have an IDE such as Jungle open you will need to restart it after setting up ANDROID_HOME.
+
+### Android API Versions
+The android-support-v4_lib and google-play-services_lib folders have API level 23 defined. If you do not have this version installed you must change these defined versions to one you do have or you must install 23. There are 5 project.properties files in total you must edit in the lib folders.
+
 ### SDK and plugin integration
-Place `android-support-v4_lib`, `google-play-services_lib` and `native` folders and `appodeal.monkey` file to your project folder.
+From this example, place `android-support-v4_lib`, `google-play-services_lib`, `native` folders and `appodeal.monkey` file to your project's root folder. If you wish to place them elsewhere you must edit the android-library.reference lines below to have the correct path.
 
 ### Build process
 To build application with all dependencies you need to run buid process as usual. It will be failed with the following error:
 ```
 Error: No resource found that matches the given name (at 'value' with value '@integer/google_play_services_version')
 ```
-That's fine. After that open `build\android\project.properties` file with any text editor and add the following lines:
+That's fine. After that open `build\android\templates\project.properties` file with any text editor and add the following lines:
 ```
 android.library.reference.1=../../google-play-services_lib/play-services-ads-9.8.0
 android.library.reference.2=../../google-play-services_lib/play-services-ads-lite-9.8.0
@@ -27,7 +38,28 @@ android.library.reference.3=../../google-play-services_lib/play-services-base-9.
 android.library.reference.4=../../google-play-services_lib/play-services-basement-9.8.0
 android.library.reference.5=../../android-support-v4_lib
 ```
-Now you can build your project without any problems.
+
+Now you should be able to build your project without any problems.
+
+### Optional modifications
+
+If you wish to not add these lines each time you remake the build folder you can edit a project appropriate .monkey file to include the lines:
+```
+#ANDROID_LIBRARY_REFERENCE_1="android.library.reference.1=../../google-play-services_lib/play-services-ads-9.8.0"
+#ANDROID_LIBRARY_REFERENCE_2="android.library.reference.2=../../google-play-services_lib/play-services-ads-lite-9.8.0"
+#ANDROID_LIBRARY_REFERENCE_3="android.library.reference.3=../../google-play-services_lib/play-services-base-9.8.0"
+#ANDROID_LIBRARY_REFERENCE_4="android.library.reference.4=../../google-play-services_lib/play-services-basement-9.8.0"
+#ANDROID_LIBRARY_REFERENCE_5="android.library.reference.5=../../android-support-v4_lib"
+```
+Then you must edit the project.properties of your Android target template to include additional references as by default it only includes two. For example, edit: \MonkeyXPro87b\targets\android\template\templates\project.properties to include the lines on the bottom to include the five or more references so that they can be properly replaced when you make clean builds:
+```
+${ANDROID_LIBRARY_REFERENCE_1}
+${ANDROID_LIBRARY_REFERENCE_2}
+${ANDROID_LIBRARY_REFERENCE_3}
+${ANDROID_LIBRARY_REFERENCE_4}
+${ANDROID_LIBRARY_REFERENCE_5}
+```
+
 
 ### Ad types
 AdType.INTERSTITIAL
@@ -310,7 +342,7 @@ Should be used before SDK initialization.
 ```
 Appodeal.disableNetwork(network)
 ```
-Also, it’s possible to disable network only for specific ad types.
+Also, itâ€™s possible to disable network only for specific ad types.
 ```
 Appodeal::disableNetwork("networkName", adTypes);
 ```
