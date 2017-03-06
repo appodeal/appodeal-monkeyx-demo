@@ -1,6 +1,6 @@
 #ANDROID_APP_LABEL="Appodeal Test"
 #ANDROID_APP_PACKAGE="com.appodeal.test"
-#ANDROID_SCREEN_ORIENTATION="portrait"
+#ANDROID_SCREEN_ORIENTATION="landscape"
 #ANDROID_VERSION_CODE="1"
 #ANDROID_VERSION_NAME="1.0"
 #ANDROID_KEY_STORE="Appodeal.jks"
@@ -12,13 +12,7 @@ Strict
 
 Import mojo
 Import appodeal
-
-Import SimpleUI.common
-Import SimpleUI.widgetManager
-Import SimpleUI.Scrollers
-Import SimpleUI.panel
-
-Global interstitialState:=0 '0 - not loaded; 1 - loading; 2 - loaded
+Import eazyGadget
 
 Class MyBannerCallbacks Extends AdBannerCallbacks
 	Method onBannerClicked:Void()
@@ -43,11 +37,9 @@ Class MyInterstitialCallbacks Extends AdInterstitialCallbacks
 		AdAppodeal.GetAppodeal().showMessage("interstitial closed")
 	End
 	Method onInterstitialLoaded:Void(isPrecache:Bool)
-		interstitialState = 2
 		AdAppodeal.GetAppodeal().showMessage("interstitial loaded. precache: " + String(Int(isPrecache)))
 	End
 	Method onInterstitialFailedToLoad:Void()
-		interstitialState = 0
 		AdAppodeal.GetAppodeal().showMessage("interstitial failed to load")
 	End
 	Method onInterstitialShown:Void()
@@ -97,14 +89,25 @@ Function Main:Int()
 End Function
 
 Class Game Extends App
-	Field widgets:WidgetManager
-	Field buttonInit:PushButton
-	Field buttonBannerShow:PushButton
-	Field buttonBannerHide:PushButton
-	Field buttonInterstitial:PushButton
-	Field buttonVideo:PushButton
-	Field buttonRewardedVideo:PushButton
-	Field Cursor:= New MousePointer()
+	Field adType:ezComboBox
+	Field buttonInit:ezButton
+	Field buttonCache:ezButton
+	Field buttonIsLoaded:ezButton
+	Field buttonIsPrecache:ezButton
+	Field buttonShow:ezButton
+	Field buttonShowWithPlacement:ezButton
+	Field buttonHide:ezButton
+	Field logging:ezCheckBox
+	Field testing:ezCheckBox
+	Field confirm:ezCheckBox
+	Field autocache:ezCheckBox
+	Field disableSmartBanners:ezCheckBox
+	Field disableBannerAnimation:ezCheckBox
+	Field disable728x90Banners:ezCheckBox
+	Field enableTriggerOnLoadedOnPrecache:ezCheckBox
+	Field disableLocationPermissionCheck:ezCheckBox
+	Field disableWriteExternalStorageCheck:ezCheckBox
+
 	Field Appodeal:AdAppodeal
 	Field userSettings:AdUserSettings
 	Field bannerCallbacks:MyBannerCallbacks = New MyBannerCallbacks
@@ -113,60 +116,82 @@ Class Game Extends App
 	Field rewardedCallbacks:MyRewardedCallbacks = New MyRewardedCallbacks
 	Field windowWidth:Int
 	Field windowHeight:Int
-	Field buttonWidth:=200
-	Field buttonHeight:=100
+	Field buttonWidth:=100
+	Field buttonHeight:=50
 	Field buttonMargin:=10
+	Field checkboxesWidth:Int
 	
 	Method OnCreate:Int()
 		SetUpdateRate 60
 		
 		Appodeal = Appodeal.GetAppodeal()
 		
-		widgets = New WidgetManager(Cursor)
-		
 		windowWidth = DeviceWidth()
 		windowHeight = DeviceHeight()
-		buttonWidth = windowWidth - 20
+		buttonWidth = windowWidth * 0.35
+		checkboxesWidth = windowWidth - buttonWidth - 30
 		
-		buttonInit = New PushButton(10, 0 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
-		buttonBannerShow = New PushButton(10, 1 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
-		buttonBannerHide = New PushButton(10, 2 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
-		buttonInterstitial = New PushButton(10, 3 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
-		buttonVideo = New PushButton(10, 4 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
-		buttonRewardedVideo = New PushButton(10, 5 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight, Cursor)
+		adType = New ezComboBox(10, 0 * (buttonHeight + buttonMargin), buttonWidth, buttonHeight)
+		adType.AddItem("Select Ad Type")
+		adType.AddItem("Banner Top")
+		adType.AddItem("Banner Bottom")
+		adType.AddItem("Interstitial")
+		adType.AddItem("Skippable Video")
+		adType.AddItem("Interstitial or Video")
+		adType.AddItem("Rewarded Video")
+		buttonInit = New ezButton(10, 1 *(buttonHeight + buttonMargin), buttonWidth, buttonHeight, "Initialize" )
+		buttonCache = New ezButton(10, 2 *(buttonHeight + buttonMargin), buttonWidth, buttonHeight, "Cache" )
+		buttonIsLoaded = New ezButton(10, 3 *(buttonHeight + buttonMargin), buttonWidth, buttonHeight, "Is Loaded?" )
+		buttonIsPrecache = New ezButton(10, 4 *(buttonHeight + buttonMargin), buttonWidth, buttonHeight, "Is Precache?" )
+		buttonShow = New ezButton(10, 5 *(buttonHeight + buttonMargin), buttonWidth, buttonHeight, "Show" )
+		buttonShowWithPlacement = New ezButton(10, 6 *(buttonHeight + buttonMargin), buttonWidth, buttonHeight, "Show With Placement" )
+		buttonHide = New ezButton(10, 7 *(buttonHeight + buttonMargin), buttonWidth, buttonHeight, "Hide" )
+
+		logging = New ezCheckBox(10 + buttonWidth + 10, 0 * (buttonHeight + buttonMargin), checkboxesWidth/2, buttonHeight, "Logging")
+		testing = New ezCheckBox(10 + buttonWidth + 10 + checkboxesWidth/2, 0 * (buttonHeight + buttonMargin), checkboxesWidth/2, buttonHeight, "Testing")
+		confirm = New ezCheckBox(10 + buttonWidth + 10, 1 * (buttonHeight + buttonMargin), checkboxesWidth/2, buttonHeight, "Confirm")
+		autocache = New ezCheckBox(10 + buttonWidth + 10 + checkboxesWidth/2, 1 * (buttonHeight + buttonMargin), checkboxesWidth, buttonHeight, "Autocache")
+		disableSmartBanners = New ezCheckBox(10 + buttonWidth + 10, 2 * (buttonHeight + buttonMargin), checkboxesWidth, buttonHeight, "DisableSmartBanners")
+		disableBannerAnimation = New ezCheckBox(10 + buttonWidth + 10, 3 * (buttonHeight + buttonMargin), checkboxesWidth, buttonHeight, "DisableBannerAnimation")
+		disable728x90Banners = New ezCheckBox(10 + buttonWidth + 10, 4 * (buttonHeight + buttonMargin), checkboxesWidth, buttonHeight, "Disable 728x90 Banners")
+		enableTriggerOnLoadedOnPrecache = New ezCheckBox(10 + buttonWidth + 10, 5 * (buttonHeight + buttonMargin), checkboxesWidth, buttonHeight, "Trigger onLoaded on precache")
+		disableLocationPermissionCheck = New ezCheckBox(10 + buttonWidth + 10, 6 * (buttonHeight + buttonMargin), checkboxesWidth, buttonHeight, "Disable Location Permission Check")
+		disableWriteExternalStorageCheck = New ezCheckBox(10 + buttonWidth + 10, 7 * (buttonHeight + buttonMargin), checkboxesWidth, buttonHeight, "Disable Write External Storage Ceck")
 		
-		buttonInit.Text = "Init"
-		buttonBannerShow.Text = "Banner show"
-		buttonBannerHide.Text = "Banner hide"
-		buttonInterstitial.Text = "Interstitial"
-		buttonVideo.Text = "Skippable Video"
-		buttonRewardedVideo.Text = "Rewarded Video"
 		
-		widgets.Attach(buttonInit)
-		widgets.Attach(buttonBannerShow)
-		widgets.Attach(buttonBannerHide)
-		widgets.Attach(buttonInterstitial)
-		widgets.Attach(buttonVideo)
-		widgets.Attach(buttonRewardedVideo)
 
 		Return 0
 	End Method
 	
 	Method OnUpdate:Int()				
-		If KeyHit(KEY_ESCAPE) or KeyHit(KEY_CLOSE) or KeyHit(KEY_BACK) Then Error("")
+		If KeyHit(KEY_ESCAPE) Or KeyHit(KEY_CLOSE) Or KeyHit(KEY_BACK) Then Error("")
 		
-		Cursor.Poll()	
-		widgets.PollAll()
+		adType.Update()
+		logging.Update()
+		testing.Update()
+		confirm.Update()
+		autocache.Update()
+		disableSmartBanners.Update()
+		disableBannerAnimation.Update()
+		disable728x90Banners.Update()
+		enableTriggerOnLoadedOnPrecache.Update()
+		disableLocationPermissionCheck.Update()
+		disableWriteExternalStorageCheck.Update()
 		
-		If buttonInit.hit
+		If buttonInit.Update()
 		  'Appodeal.initialize("722fb56678445f72fe2ec58b2fa436688b920835405d3ca6",AdType.BANNER | AdType.SKIPPABLE_VIDEO | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO)
-		  Appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f",AdType.BANNER | AdType.SKIPPABLE_VIDEO | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO)
-		  Appodeal.confirm(AdType.SKIPPABLE_VIDEO)
+		  If logging.State() <> 0 Then Appodeal.setLogLevel(AdLogLevel.verbose) Else Appodeal.setLogLevel(AdLogLevel.none)
+		  Appodeal.setTesting(Bool(testing.State()))
+		  If confirm.State() = 1 Then Appodeal.confirm(GetAdType())
+		  Appodeal.setAutoCache(GetAdType(), Bool(autocache.State()))
 		  
-		  Appodeal.setLogLevel(AdLogLevel.verbose)
-		  Appodeal.setSmartBanners(False)
-		  'Appodeal.set728x90Banners(False)
-		  Appodeal.setBannerAnimation(True)
+		  Appodeal.setSmartBanners(disableSmartBanners.State() = 0)
+		  Appodeal.set728x90Banners(disable728x90Banners.State() = 0)
+		  Appodeal.setBannerAnimation(disableBannerAnimation.State() = 0)
+		  Appodeal.setOnLoadedTriggerBoth(GetAdType(), Bool(enableTriggerOnLoadedOnPrecache.State()))
+		  
+		  If disableLocationPermissionCheck.State() <> 0 Then Appodeal.disableLocationPermissionCheck()
+		  If disableWriteExternalStorageCheck.State() <> 0 Then Appodeal.disableWriteExternalStoragePermissionCheck()
 		  
 		  userSettings = Appodeal.GetUserSettings()
 		  userSettings.setAge(25)
@@ -184,49 +209,79 @@ Class Game Extends App
 		  Appodeal.setSkippableVideoCallbacks(skippableCallbacks)
 		  Appodeal.setRewardedVideoCallbacks(rewardedCallbacks)
 		  
-		  Appodeal.setAutoCache(AdType.INTERSTITIAL, False)
-		  'Appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", AdType.BANNER | AdType.SKIPPABLE_VIDEO | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO)
+		  Appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", GetAdType())
+		  Appodeal.setCustomRule("user_age", 18)
+		  Appodeal.setCustomRule("online_time", 5.34)
+		  Appodeal.setCustomRule("premium_user", True)
+		  Appodeal.setCustomRule("some_string_rule", "value")		  
 		End If
 		
-		If buttonBannerShow.hit
-		  Appodeal.show(AdType.BANNER_BOTTOM, "bottom_banner")
+		If buttonCache.Update()
+		  Appodeal.cache(GetAdType())
 		End If
 		
-		If buttonBannerHide.hit		
-		  Appodeal.hide(AdType.BANNER)
-		  Appodeal.setCustomRule("segment", True)
+		If buttonIsLoaded.Update()		
+		  Appodeal.showMessage("Is loaded: " + String(Int(Appodeal.isLoaded(GetAdType()))))
 		End If
 		
-		If buttonInterstitial.hit
-		  If interstitialState = 0
-		    interstitialState = 1
-		    Appodeal.cache(AdType.INTERSTITIAL)
-		  End If
-		  If interstitialState = 2
-		    interstitialState = 0
-		    Appodeal.show(AdType.INTERSTITIAL, "main_menu_placement")
-		    Appodeal.setCustomRule("segment", 32)
-		  End If
+		If buttonIsPrecache.Update()
+		    Appodeal.showMessage("Is precache: " + String(Int(Appodeal.isPrecache(GetAdType()))))
 		End If
 		
-		If buttonVideo.hit
-		  Appodeal.show(AdType.SKIPPABLE_VIDEO)
-		  Appodeal.setCustomRule("segment", 32.5)
+		If buttonShow.Update()
+		  Appodeal.show(GetAdType())
 		End If
 		
-		If buttonRewardedVideo.hit
-		  If Appodeal.isLoaded(AdType.REWARDED_VIDEO)
-		    Appodeal.show(AdType.REWARDED_VIDEO)
-		    Appodeal.setCustomRule("segment", "custom")
-		  End If
+		If buttonShowWithPlacement.Update()
+		  Appodeal.show(GetAdType(), "main_menu_placement")
+		End If
+		
+		If buttonHide.Update()
+		  Appodeal.hide(GetAdType())
 		End If
 		
 		Return 0		
 	End Method
 	
+	Method GetAdType:Int()
+		Select adType.Index()
+			Case 1
+				Return AdType.BANNER_TOP
+			Case 2
+				Return AdType.BANNER_BOTTOM
+			Case 3
+				Return AdType.INTERSTITIAL
+			Case 4
+				Return AdType.SKIPPABLE_VIDEO
+			Case 5 
+				Return AdType.INTERSTITIAL | AdType.SKIPPABLE_VIDEO
+			Case 6
+				Return AdType.REWARDED_VIDEO
+			Default
+				Return 0
+		End Select
+	End Method
+	
 	Method OnRender:Int()
 		Cls(255, 0, 0)
-		widgets.RenderAll()
+		buttonInit.Render
+		buttonCache.Render
+		buttonIsLoaded.Render
+		buttonIsPrecache.Render
+		buttonShow.Render
+		buttonShowWithPlacement.Render
+		buttonHide.Render
+		adType.Render
+		logging.Render
+		testing.Render
+		confirm.Render
+		autocache.Render
+		disableSmartBanners.Render
+		disableBannerAnimation.Render
+		disable728x90Banners.Render
+		enableTriggerOnLoadedOnPrecache.Render
+		disableLocationPermissionCheck.Render
+		disableWriteExternalStorageCheck.Render
 		Return 0	
 	End Method
 
