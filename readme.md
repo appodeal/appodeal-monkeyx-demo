@@ -60,6 +60,15 @@ ${ANDROID_LIBRARY_REFERENCE_4}
 ${ANDROID_LIBRARY_REFERENCE_5}
 ```
 
+### Large project issues
+
+If you are adding Appodeal to a large project you may get the error:
+```
+[dx] UNEXPECTED TOP-LEVEL EXCEPTION:
+[dx] com.android.dex.DexIndexOverflowException: Cannot merge new index 66150 into a non-jumbo instruction!
+```
+Test adding `dex.force.jumbo=true` to the end of your `build\android\templates\project.properties` file and building again.
+
 
 ### Ad types
 AdType.INTERSTITIAL
