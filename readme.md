@@ -2,14 +2,13 @@
 
 This is official Appodeal Monkey X plugin
 
+# iOS Instructions
+
+See here: https://github.com/appodeal/appodeal-monkey-x-ios-plugin
+
 # Android Instructions
 
-## Download SDK
-[![](https://img.shields.io/badge/docs-android-green.svg)](https://www.appodeal.com/sdk/documentation?framework=12&full=1&platform=1)
-[![](https://img.shields.io/badge/docs-ios-green.svg)](https://www.appodeal.com/sdk/documentation?framework=12&full=1&platform=1)
-
-## AndroidManifest.xml
-Already included to module.
+See below: 
 
 ## Monkey X Android Integration
 
