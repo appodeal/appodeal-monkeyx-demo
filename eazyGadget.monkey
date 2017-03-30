@@ -149,7 +149,7 @@ End Class
 '   Gadget :	Canvas                               
 '╚════════════════════════════════════════════════════════════════════════════════════════════════╝
 Class ezCanvas
-	Private
+	Public
 	Field x_Pos:Int
 	Field y_Pos:Int
 	Field width:Int
@@ -216,7 +216,7 @@ End Class
 '   Gadget :	Slider                              
 '╚════════════════════════════════════════════════════════════════════════════════════════════════╝
 Class ezSlider
-	Private
+	Public
 	Const VERT:Int = 0, HORZ:Int = 1
 	Field x_Pos:Int
 	Field y_Pos:Int
@@ -324,7 +324,7 @@ End Class
 '   Gadget :	Button                               
 '╚════════════════════════════════════════════════════════════════════════════════════════════════╝
 Class ezButton
-	Private
+	Public
 	Field x_Pos:Int
 	Field y_Pos:Int
 	Field width:Int
@@ -408,7 +408,7 @@ End Class
 '   Gadget :	Text Box                               
 '╚════════════════════════════════════════════════════════════════════════════════════════════════╝
 Class ezTextBox
-	Private
+	Public
 	Field x_Pos:Int
 	Field y_Pos:Int
 	Field width:Int
@@ -563,7 +563,7 @@ End Class
 '   Gadget :	Check Box                              
 '╚════════════════════════════════════════════════════════════════════════════════════════════════╝
 Class ezCheckBox
-	Private
+	Public
 	Field x_Pos:Int
 	Field y_Pos:Int
 	Field width:Int
@@ -634,7 +634,7 @@ End Class
 '   Gadget :	List Box                            
 '╚════════════════════════════════════════════════════════════════════════════════════════════════╝
 Class ezListBox
-	Private
+	Public
 	Field x_Pos:Int
 	Field y_Pos:Int
 	Field width:Int
@@ -754,7 +754,7 @@ End Class
 '   Gadget :	Spinner
 '╚════════════════════════════════════════════════════════════════════════════════════════════════╝
 Class ezSpinner
-	Private
+	Public
 	Field x_Pos:Int
 	Field y_Pos:Int
 	Field width:Int
@@ -855,7 +855,7 @@ End Class
 '   Gadget :	Combo box
 '╚════════════════════════════════════════════════════════════════════════════════════════════════╝
 Class ezComboBox
-	Private
+	Public
 	Field x_Pos:Int
 	Field y_Pos:Int
 	Field width:Int
@@ -950,7 +950,7 @@ End Class
 '   Gadget :	Label
 '╚════════════════════════════════════════════════════════════════════════════════════════════════╝
 Class ezLabel
-	Private
+	Public
 	Field x_Pos:Int
 	Field y_Pos:Int
 	Field width:Int
