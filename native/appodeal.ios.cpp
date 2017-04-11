@@ -537,7 +537,7 @@ void BBAppodeal::bannerDidFailToLoadAd() {
 }
 
 void BBAppodeal::bannerDidLoadAdIsPrecache(BOOL precache) {
-    bannerCallbacks->onBannerLoaded(precache);
+    bannerCallbacks->onBannerLoaded(0, precache);
 }
 
 //interstitial callbacks

@@ -174,7 +174,7 @@ class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippable
 	@Override
 	public void onBannerLoaded(int height, boolean isPrecache) {
 		if(bannerCallbacks != null)
-			bannerCallbacks.onBannerLoaded(isPrecache);
+			bannerCallbacks.onBannerLoaded(height, isPrecache);
 	}
 
 	@Override

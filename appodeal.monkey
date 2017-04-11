@@ -263,7 +263,7 @@ Extern
 Class AdBannerCallbacks Extends Null="BBBannerCallbacks"
 	Method onBannerClicked:Void() Abstract
 	Method onBannerFailedToLoad:Void() Abstract
-	Method onBannerLoaded:Void(isPrecache:Bool) Abstract
+	Method onBannerLoaded:Void(height:Int,isPrecache:Bool) Abstract
 	Method onBannerShown:Void() Abstract
 End
 
