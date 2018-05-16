@@ -4,7 +4,45 @@ This is official Appodeal Monkey X plugin
 
 # iOS Instructions
 
-See here: https://github.com/appodeal/appodeal-monkey-x-ios-plugin
+To add Appodeal ads to your iOS target Monkey project, you should download this demo and add folder "native" to your project folder. See the example in this git for how this is to be done in a Monkey project.
+
+After that you should build your project in Ted or another Monkey friendly IDE to convert your app to XCode project. If you see error like this:
+
+`MonkeyXPro78h/modules/appodeal/appodeal_example.buildv78h/ios/main.mm:4290:9: fatal error: 'Appodeal/Appodeal.h' file not found
+#import "Appodeal/Appodeal.h"`
+
+Do not worry - this will be fixed in the next steps.
+
+After making the target build with Monkey, you should next open the generated XCode project and make some changes:
+
++ Type bundle identifier, current version of app and choose Provisioning profile for successful debug. 
++ Set up the following keys in your app’s info.plist:
+
+```plist
+<key>NSAppTransportSecurity</key>
+<dict>
+  <key>NSAllowsArbitraryLoads</key>
+  <true/>
+</dict>
+```
+
++ Add this key in Info.plist, if you use these functions in your app
+
+```plist
+<key>NSBluetoothPeripheralUsageDescription</key>
+<string>Advertising</string>
+<key>NSCalendarsUsageDescription</key>
+<string>Advertising</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Advertising</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Advertising</string>
+```
+
++ Change deployment target in project settings and target settings to 8.1 or higher.
++ Add "libz.tbd", "libc++.tbd", "libsqlite3.tbd", "libxml2.2" libraries to Build phases->Link Binary With Libraries. 
++ Download Appodeal SDK from here: https://www.appodeal.com/sdk/documentation?framework=20&full=1&platform=4
++ After downloading unzip archive. Drag and drop Appodeal.framework into your project. Then right click on your project (MonkeyGame), click New Group, name it Resources, and then drag and drop the files from the Resources folder into the Resources group in your project. When dragging and dropping files both times you should check "Copy items if needed" option. If done properly you should be able to see at least 32 items in your Copy Bundle Resources list of the Build Phases tab.
 
 # Android Instructions
 
@@ -61,21 +99,16 @@ ${ANDROID_LIBRARY_REFERENCE_5}
 
 
 ### Ad types
-AdType.INTERSTITIAL
 
-AdType.SKIPPABLE_VIDEO
++ AdType.INTERSTITIAL
++ AdType.REWARDED_VIDEO
++ AdType.NON_SKIPPABLE_VIDEO
++ AdType.BANNER
 
-AdType.REWARDED_VIDEO
-
-AdType.NON_SKIPPABLE_VIDEO
-
-AdType.BANNER
-
-Ad types can be combined using "|" operator. For example AdType.INTERSTITIAL | AdType.SKIPPABLE_VIDEO
-
-Note that it is better to use NON_SKIPPABLE_VIDEO or REWARDED_VIDEO, but if you are sure you want to use SKIPPABLE_VIDEO you must confirm usage by calling appodeal.confirm(AdType.SKIPPABLE_VIDEO) before SDK initialization
+Ad types can be combined using "|" operator. For example AdType.INTERSTITIAL | AdType.NON_SKIPPABLE_VIDEO
 
 ### SDK initialization
+
 First import appodeal module to your project:
 ```
 Import appodeal
@@ -88,15 +121,12 @@ Appodeal.initialize(appKey, AdType.INTERSTITIAL | AdType.BANNER)
 ```
 To initialize only interstitials use Appodeal.initialize(appKey, AdType.INTERSTITIAL)
 
-To initialize only skippable videos use Appodeal.initialize(appKey, AdType.SKIPPABLE_VIDEO)
-
 To initialize only rewarded video use Appodeal.initialize(appKey, AdType.REWARDED_VIDEO)
 
 To initialize only non-skippable video use Appodeal.initialize(appKey, AdType.NON_SKIPPABLE_VIDEO)
 
-To initialize interstitials and videos use Appodeal.initialize(appKey, AdType.INTERSTITIAL | AdType.SKIPPABLE_VIDEO)
-
 To initialize only banners use Appodeal.initialize(appKey, AdType.BANNER)
+
 ### Display ad
 ```
 Appodeal.show(AdType)
@@ -105,13 +135,9 @@ show() returns a boolean value indicating whether show call was passed to approp
 
 To display interstitial use Appodeal.show(AdType.INTERSTITIAL)
 
-To display skippable video use Appodeal.show(AdType.SKIPPABLE_VIDEO)
-
 To display rewarded video use Appodeal.show(AdType.REWARDED_VIDEO)
 
 To display non-skippable video use Appodeal.show(AdType.NON_SKIPPABLE_VIDEO)
-
-To display interstitial or video use Appodeal.show(AdType.INTERSTITIAL | AdType.SKIPPABLE_VIDEO)
 
 To display banner at the bottom of the screen use Appodeal.show(AdType.BANNER_BOTTOM)
 
@@ -176,8 +202,6 @@ Appodeal.isLoaded(AdType)
 ```
 To check if interstitial is loaded use Appodeal.isLoaded(AdType.INTERSTITIAL)
 
-To check if skippable video is loaded use Appodeal.isLoaded(AdType.SKIPPABLE_VIDEO)
-
 To check if rewarded video is loaded use Appodeal.isLoaded(AdType.REWARDED_VIDEO)
 
 To check if non-skippable video is loaded use Appodeal.isLoaded(AdType.NON_SKIPPABLE_VIDEO)
@@ -209,27 +233,6 @@ End
 Create instance of your class and pass it to setInterstitialCallbacks method:
 ```
 Appodeal.setInterstitialCallbacks(interstitialCallbacks)
-```
-
-#### Setting skippable video callbacks
-Create new class, which is extends AdSkippableVideoCallbacks:
-```
-Class MySkippableCallbacks Extends AdSkippableVideoCallbacks
-	Method onSkippableVideoClosed:Void()
-	End
-	Method onSkippableVideoFailedToLoad:Void()
-	End
-	Method onSkippableVideoFinished:Void()
-	End
-	Method onSkippableVideoLoaded:Void()
-	End
-	Method onSkippableVideoShown:Void()
-	End
-End
-```
-Create instance of your class and pass it to setSkippableVideoCallbacks method:
-```
-Appodeal.setSkippableVideoCallbacks(skippableCallbacks)
 ```
 
 #### Setting rewarded video callbacks
@@ -301,8 +304,6 @@ You should disable automatic caching before SDK initialization using setAutoCach
 
 To cache interstitial use Appodeal.cache(AdType.INTERSTITIAL)
 
-To cache skippable video use Appodeal.cache(AdType.SKIPPABLE_VIDEO)
-
 To cache rewarded video use Appodeal.cache(AdType.REWARDED_VIDEO)
 
 To cache non-skippable video use Appodeal.cache(AdType.NON_SKIPPABLE_VIDEO)
@@ -318,8 +319,6 @@ Appodeal.setAutoCache(adTypes, False)
 Should be used before SDK initialization
 
 To disable automatic caching for interstitials use Appodeal.setAutoCache(AdType.INTERSTITIAL, False)
-
-To disable automatic caching for skippable videos use Appodeal.setAutoCache(AdType.SKIPPABLE_VIDEO, False)
 
 To disable automatic caching for rewarded videos use Appodeal.setAutoCache(AdType.REWARDED_VIDEO, False)
 
@@ -345,7 +344,7 @@ Also, it’s possible to disable network only for specific ad types.
 ```
 Appodeal::disableNetwork("networkName", adTypes);
 ```
-Available parameters: "amazon_ads", "applovin", "chartboost", "mopub", "unity_ads", "mailru", "facebook", "adcolony", "vungle", "yandex", "startapp", "avocarrot", "flurry", "pubnative", "cheetah", "inner-active", "revmob".
+Available parameters: "adcolony", "admob", "amazon_ads", "applovin", "appnext", "avocarrot", "chartboost", "facebook", "flurry", "inmobi", "inner-active", "ironsource", "mailru", "mmedia", "mopub", "mobvista", "ogury", "openx", "pubnative", "smaato", "startapp", "tapjoy", "unity_ads", "vungle", "yandex"
 
 Should be used before SDK initialization
 
