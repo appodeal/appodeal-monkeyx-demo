@@ -24,7 +24,9 @@ class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippable
 	}
 	
 	public void initialize(String appKey, int adType){
-		Appodeal.disableNetwork(activity, "cheetah");
+		Appodeal.disableNetwork(activity, "mmedia");
+		Appodeal.disableNetwork(activity, "mobvista");
+		Appodeal.disableNetwork(activity, "adcolony");
 		Appodeal.setBannerCallbacks(this);
 		Appodeal.setInterstitialCallbacks(this);
 		Appodeal.setNonSkippableVideoCallbacks(this);
