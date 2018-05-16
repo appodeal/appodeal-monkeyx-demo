@@ -1,11 +1,13 @@
+import android.app.Activity;
+import android.widget.Toast;
+
 import com.appodeal.ads.Appodeal;
 import com.appodeal.ads.BannerCallbacks;
 import com.appodeal.ads.InterstitialCallbacks;
 import com.appodeal.ads.NonSkippableVideoCallbacks;
 import com.appodeal.ads.RewardedVideoCallbacks;
-import com.appodeal.ads.SkippableVideoCallbacks;
 
-class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippableVideoCallbacks, RewardedVideoCallbacks, SkippableVideoCallbacks{
+class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippableVideoCallbacks, RewardedVideoCallbacks {
 	
 	static BBAppodeal appodeal;
 	private BBUserSettings userSettings;
@@ -13,7 +15,6 @@ class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippable
 	private BBInterstitialCallbacks interstitialCallbacks;
 	private BBNonSkippableVideoCallbacks nonSkippableCallbacks;
 	private BBRewardedVideoCallbacks rewardedCallbacks;
-	private BBSkippableVideoCallbacks skippableCallbacks;
 	
 	Activity activity = BBAndroidGame.AndroidGame().GetActivity();
 	
@@ -28,7 +29,6 @@ class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippable
 		Appodeal.setInterstitialCallbacks(this);
 		Appodeal.setNonSkippableVideoCallbacks(this);
 		Appodeal.setRewardedVideoCallbacks(this);
-		Appodeal.setSkippableVideoCallbacks(this);
 		Appodeal.initialize(activity, appKey, adType);
 	}
 	
@@ -38,10 +38,6 @@ class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippable
 	
 	public boolean show(int adType, String placement){
 		return Appodeal.show(activity, adType, placement);
-	}
-	
-	public void confirm(int adType){
-		Appodeal.confirm(adType);
 	}
 	
 	public void cache(int adType){
@@ -65,7 +61,7 @@ class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippable
 	}
 	
 	public void setOnLoadedTriggerBoth(int adType, boolean state){
-		Appodeal.setOnLoadedTriggerBoth(adType, state);
+		Appodeal.setTriggerOnLoadedOnPrecache(adType, state);
 	}
 	
 	public void disableNetwork(String network){
@@ -145,10 +141,6 @@ class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippable
 	
 	public void setInterstitialCallbacks(BBInterstitialCallbacks callbacks){
 		interstitialCallbacks = callbacks;
-	}
-	
-	public void setSkippableVideoCallbacks(BBSkippableVideoCallbacks callbacks){
-		skippableCallbacks = callbacks;
 	}
 	
 	public void setRewardedVideoCallbacks(BBRewardedVideoCallbacks callbacks){
@@ -241,36 +233,6 @@ class BBAppodeal implements BannerCallbacks, InterstitialCallbacks, NonSkippable
 	public void onNonSkippableVideoShown() {
 		if(nonSkippableCallbacks != null)
 			nonSkippableCallbacks.onNonSkippableVideoShown();
-	}
-	
-	@Override
-	public void onSkippableVideoClosed(boolean finished) {
-		if(skippableCallbacks != null)
-			skippableCallbacks.onSkippableVideoClosed();
-	}
-
-	@Override
-	public void onSkippableVideoFailedToLoad() {
-		if(skippableCallbacks != null)
-			skippableCallbacks.onSkippableVideoFailedToLoad();
-	}
-
-	@Override
-	public void onSkippableVideoFinished() {
-		if(skippableCallbacks != null)
-			skippableCallbacks.onSkippableVideoFinished();
-	}
-
-	@Override
-	public void onSkippableVideoLoaded() {
-		if(skippableCallbacks != null)
-			skippableCallbacks.onSkippableVideoLoaded();
-	}
-
-	@Override
-	public void onSkippableVideoShown() {
-		if(skippableCallbacks != null)
-			skippableCallbacks.onSkippableVideoShown();
 	}
 	
 	@Override

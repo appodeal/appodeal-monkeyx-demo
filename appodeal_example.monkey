@@ -21,8 +21,8 @@ Class MyBannerCallbacks Extends AdBannerCallbacks
 	Method onBannerFailedToLoad:Void()
 		AdAppodeal.GetAppodeal().showMessage("failed to load")
 	End
-	Method onBannerLoaded:Void(isPrecache:Bool)
-		AdAppodeal.GetAppodeal().showMessage(String(Int(isPrecache)))
+	Method onBannerLoaded:Void(height:Int, isPrecache:Bool)
+		AdAppodeal.GetAppodeal().showMessage("banner loaded, height:" + height + ", precache:" + String(Int(isPrecache)))
 	End
 	Method onBannerShown:Void()
 		AdAppodeal.GetAppodeal().showMessage("banner shown")
@@ -44,24 +44,6 @@ Class MyInterstitialCallbacks Extends AdInterstitialCallbacks
 	End
 	Method onInterstitialShown:Void()
 		AdAppodeal.GetAppodeal().showMessage("interstitial shown")
-	End
-End
-
-Class MySkippableCallbacks Extends AdSkippableVideoCallbacks
-	Method onSkippableVideoClosed:Void()
-		AdAppodeal.GetAppodeal().showMessage("skippable video closed")
-	End
-	Method onSkippableVideoFailedToLoad:Void()
-		AdAppodeal.GetAppodeal().showMessage("skippable video failed to load")
-	End
-	Method onSkippableVideoFinished:Void()
-		AdAppodeal.GetAppodeal().showMessage("skippable video finished")
-	End
-	Method onSkippableVideoLoaded:Void()
-		AdAppodeal.GetAppodeal().showMessage("skippable video loaded")
-	End
-	Method onSkippableVideoShown:Void()
-		AdAppodeal.GetAppodeal().showMessage("skippable video shown")
 	End
 End
 
@@ -112,7 +94,6 @@ Class Game Extends App
 	Field userSettings:AdUserSettings
 	Field bannerCallbacks:MyBannerCallbacks = New MyBannerCallbacks
 	Field interstitialCallbacks:MyInterstitialCallbacks = New MyInterstitialCallbacks
-	Field skippableCallbacks:MySkippableCallbacks = New MySkippableCallbacks
 	Field rewardedCallbacks:MyRewardedCallbacks = New MyRewardedCallbacks
 	Field windowWidth:Int
 	Field windowHeight:Int
@@ -136,7 +117,6 @@ Class Game Extends App
 		adType.AddItem("Banner Top")
 		adType.AddItem("Banner Bottom")
 		adType.AddItem("Interstitial")
-		adType.AddItem("Skippable Video")
 		adType.AddItem("Interstitial or Video")
 		adType.AddItem("Rewarded Video")
 		buttonInit = New ezButton(10, 1 *(buttonHeight + buttonMargin), buttonWidth, buttonHeight, "Initialize" )
@@ -149,7 +129,6 @@ Class Game Extends App
 
 		logging = New ezCheckBox(10 + buttonWidth + 10, 0 * (buttonHeight + buttonMargin), checkboxesWidth/2, buttonHeight, "Logging")
 		testing = New ezCheckBox(10 + buttonWidth + 10 + checkboxesWidth/2, 0 * (buttonHeight + buttonMargin), checkboxesWidth/2, buttonHeight, "Testing")
-		confirm = New ezCheckBox(10 + buttonWidth + 10, 1 * (buttonHeight + buttonMargin), checkboxesWidth/2, buttonHeight, "Confirm")
 		autocache = New ezCheckBox(10 + buttonWidth + 10 + checkboxesWidth/2, 1 * (buttonHeight + buttonMargin), checkboxesWidth, buttonHeight, "Autocache")
 		disableSmartBanners = New ezCheckBox(10 + buttonWidth + 10, 2 * (buttonHeight + buttonMargin), checkboxesWidth, buttonHeight, "DisableSmartBanners")
 		disableBannerAnimation = New ezCheckBox(10 + buttonWidth + 10, 3 * (buttonHeight + buttonMargin), checkboxesWidth, buttonHeight, "DisableBannerAnimation")
@@ -169,7 +148,6 @@ Class Game Extends App
 		adType.Update()
 		logging.Update()
 		testing.Update()
-		confirm.Update()
 		autocache.Update()
 		disableSmartBanners.Update()
 		disableBannerAnimation.Update()
@@ -179,10 +157,8 @@ Class Game Extends App
 		disableWriteExternalStorageCheck.Update()
 		
 		If buttonInit.Update()
-		  'Appodeal.initialize("722fb56678445f72fe2ec58b2fa436688b920835405d3ca6",AdType.BANNER | AdType.SKIPPABLE_VIDEO | AdType.INTERSTITIAL | AdType.REWARDED_VIDEO)
 		  If logging.State() <> 0 Then Appodeal.setLogLevel(AdLogLevel.verbose) Else Appodeal.setLogLevel(AdLogLevel.none)
 		  Appodeal.setTesting(Bool(testing.State()))
-		  If confirm.State() = 1 Then Appodeal.confirm(GetAdType())
 		  Appodeal.setAutoCache(GetAdType(), Bool(autocache.State()))
 		  
 		  Appodeal.setSmartBanners(disableSmartBanners.State() = 0)
@@ -195,18 +171,11 @@ Class Game Extends App
 		  
 		  userSettings = Appodeal.GetUserSettings()
 		  userSettings.setAge(25)
-		  userSettings.setBirthday("17/06/1990")
-		  userSettings.setEmail("hi@appodeal.com")
+		  userSettings.setUserId("id1")
 		  userSettings.setGender(AdGender.FEMALE)
-		  userSettings.setInterests("reading, games, movies, snowboarding")
-		  userSettings.setOccupation(AdOccupation.WORK)
-		  userSettings.setRelation(AdRelation.DATING)
-		  userSettings.setAlcohol(AdAlcohol.NEGATIVE)
-		  userSettings.setSmoking(AdSmoking.NEGATIVE)
 		  
 		  Appodeal.setBannerCallbacks(bannerCallbacks)
 		  Appodeal.setInterstitialCallbacks(interstitialCallbacks)
-		  Appodeal.setSkippableVideoCallbacks(skippableCallbacks)
 		  Appodeal.setRewardedVideoCallbacks(rewardedCallbacks)
 		  
 		  Appodeal.initialize("fee50c333ff3825fd6ad6d38cff78154de3025546d47a84f", GetAdType())
@@ -251,11 +220,9 @@ Class Game Extends App
 				Return AdType.BANNER_BOTTOM
 			Case 3
 				Return AdType.INTERSTITIAL
-			Case 4
-				Return AdType.SKIPPABLE_VIDEO
-			Case 5 
+			Case 4 
 				Return AdType.INTERSTITIAL | AdType.SKIPPABLE_VIDEO
-			Case 6
+			Case 5
 				Return AdType.REWARDED_VIDEO
 			Default
 				Return 0
@@ -274,7 +241,6 @@ Class Game Extends App
 		adType.Render
 		logging.Render
 		testing.Render
-		confirm.Render
 		autocache.Render
 		disableSmartBanners.Render
 		disableBannerAnimation.Render

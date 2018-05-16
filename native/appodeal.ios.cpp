@@ -30,16 +30,6 @@
 
 @end
 
-@interface SkippableVideoCallbacks : NSObject <AppodealSkippableVideoDelegate> {}
-
-- (void)skippableVideoDidFinish;
-- (void)skippableVideoDidLoadAd;
-- (void)skippableVideoDidFailToLoadAd;
-- (void)skippableVideoWillDismiss;
-- (void)skippableVideoDidPresent;
-
-@end
-
 @interface RewardedVideoCallbacks : NSObject <AppodealRewardedVideoDelegate> {}
 
 - (void)rewardedVideoDidLoadAd;
@@ -50,8 +40,7 @@
 
 @end
 
-const int INTERSTITIAL  		= 1;
-const int SKIPPABLE_VIDEO	 	= 2;
+const int INTERSTITIAL  		= 3;
 const int BANNER       		 	= 4;
 const int BANNER_BOTTOM 		= 8;
 const int BANNER_TOP    	 	= 16;
@@ -75,95 +64,11 @@ AppodealUserGender convertIntToGender(int gender) {
     }
 }
 
-AppodealUserRelationship convertIntToRelation(int relation) {
-    switch (relation) {
-        case 0:
-            return AppodealUserRelationshipDating;
-            break;
-        case 1:
-            return AppodealUserRelationshipEngaged;
-            break;
-        case 2:
-            return AppodealUserRelationshipMarried;
-            break;
-        case 3:
-            return AppodealUserRelationshipOther;
-            break;
-        case 4:
-            return AppodealUserRelationshipSearching;
-            break;
-        case 5:
-            return AppodealUserRelationshipSingle;
-            break;
-        default:
-            return AppodealUserRelationshipOther;
-            break;
-    }
-}
-
-AppodealUserOccupation convertIntToOccupation(int occupation) {
-    switch (occupation) {
-        case 0:
-            return AppodealUserOccupationOther;
-            break;
-        case 1:
-            return AppodealUserOccupationSchool;
-            break;
-        case 2:
-            return AppodealUserOccupationUniversity;
-            break;
-        case 3:
-            return AppodealUserOccupationWork;
-            break;
-        default:
-            return AppodealUserOccupationOther;
-            break;
-    }
-}
-
-AppodealUserSmokingAttitude convertIntToSmoking(int smoking) {
-    switch (smoking) {
-        case 0:
-            return AppodealUserSmokingAttitudeNeutral;
-            break;
-        case 1:
-            return AppodealUserSmokingAttitudeNegative;
-            break;
-        case 2:
-            return AppodealUserSmokingAttitudePositive;
-            break;
-        default:
-            return AppodealUserSmokingAttitudeNeutral;
-            break;
-    }
-}
-
-AppodealUserAlcoholAttitude convertIntToAlcohol(int alcohol) {
-    switch (alcohol) {
-        case 0:
-            return AppodealUserAlcoholAttitudeNeutral;
-            break;
-        case 1:
-            return AppodealUserAlcoholAttitudeNegative;
-            break;
-        case 2:
-            return AppodealUserAlcoholAttitudePositive;
-            break;
-        default:
-            return AppodealUserAlcoholAttitudeNeutral;
-            break;
-    }
-}
-
 int nativeAdTypesForType(int adTypes) {
     int nativeAdTypes = 0;
     
     if ((adTypes & INTERSTITIAL) > 0) {
         nativeAdTypes |= AppodealAdTypeInterstitial;
-    }
-    
-    if ((adTypes & SKIPPABLE_VIDEO) > 0) {
-        nativeAdTypes |= AppodealAdTypeSkippableVideo;
     }
     
     if ((adTypes & REWARDED_VIDEO) > 0) {
@@ -182,14 +87,8 @@ int nativeAdTypesForType(int adTypes) {
 }
 
 int nativeShowStyleForType(int adTypes) {
-    bool isInterstitial = (adTypes & INTERSTITIAL) > 0;
-    bool isVideo = (adTypes & SKIPPABLE_VIDEO) > 0;
-    
-    if (isInterstitial && isVideo) {
-        return AppodealShowStyleVideoOrInterstitial;
-    } else if (isVideo) {
-        return AppodealShowStyleSkippableVideo;
-    } else if (isInterstitial) {
+
+    if ((adTypes & INTERSTITIAL) > 0) {
         return AppodealShowStyleInterstitial;
     }
     
@@ -215,7 +114,7 @@ class  BBBannerCallbacks {
 public:
     virtual void onBannerClicked() {}
     virtual void onBannerFailedToLoad() {}
-    virtual void onBannerLoaded(BOOL isPrecache) {}
+    virtual void onBannerLoaded(int height, BOOL isPrecache) {}
     virtual void onBannerShown() {}
     void mark() {
         BBBannerCallbacks *self=this;
@@ -249,19 +148,6 @@ public:
     }
 };
 
-class  BBSkippableVideoCallbacks {
-public:
-    virtual void onSkippableVideoClosed() {}
-    virtual void onSkippableVideoFailedToLoad() {}
-    virtual void onSkippableVideoFinished() {}
-    virtual void onSkippableVideoLoaded() {}
-    virtual void onSkippableVideoShown() {}
-    void mark() {
-        BBSkippableVideoCallbacks *self=this;
-        self->mark();
-    }
-};
-
 class  BBRewardedVideoCallbacks {
 public:
     virtual void onRewardedVideoClosed() {}
@@ -280,15 +166,8 @@ private:
 public:
     BBUserSettings();
     void setId(String userId);
-    void setEmail(String email);
-    void setBirthday(String birthday);
     void setAge(int age);
     void setGender(int gender);
-    void setOccupation(int occupation);
-    void setRelation(int relationship);
-    void setSmoking(int smokingAttitude);
-    void setAlcohol(int alcoholAttitude);
-    void setInterests(String interests);
 };
 
 class BBAppodeal{
@@ -298,7 +177,6 @@ public:
     BBBannerCallbacks *bannerCallbacks;
     BBInterstitialCallbacks *interstitialCallbacks;
     BBNonSkippableVideoCallbacks *nonSkippableVideoCallbacks;
-    BBSkippableVideoCallbacks *skippableVideoCallbacks;
     BBRewardedVideoCallbacks *rewardedVideoCallbacks;
     
     BBAppodeal();
@@ -324,12 +202,6 @@ public:
     virtual void nonSkippableVideoDidFailToLoadAd();
     virtual void nonSkippableVideoWillDismiss();
     virtual void nonSkippableVideoDidPresent();
-    
-    virtual void skippableVideoDidFinish();
-    virtual void skippableVideoDidLoadAd();
-    virtual void skippableVideoDidFailToLoadAd();
-    virtual void skippableVideoWillDismiss();
-    virtual void skippableVideoDidPresent();
     
     virtual void rewardedVideoDidLoadAd();
     virtual void rewardedVideoDidFailToLoadAd();
@@ -371,7 +243,6 @@ public:
     void setBannerCallbacks(BBBannerCallbacks *callbacks);
     void setInterstitialCallbacks(BBInterstitialCallbacks *callbacks);
     void setNonSkippableVideoCallbacks(BBNonSkippableVideoCallbacks *callbacks);
-    void setSkippableVideoCallbacks(BBSkippableVideoCallbacks *callbacks);
     void setRewardedVideoCallbacks(BBRewardedVideoCallbacks *callbacks);
     
     
@@ -447,30 +318,6 @@ public:
 
 @end
 
-@implementation SkippableVideoCallbacks
-
-- (void)skippableVideoDidLoadAd {
-    BBAppodeal::_appodeal->skippableVideoDidLoadAd();
-}
-
-- (void)skippableVideoDidPresent {
-    BBAppodeal::_appodeal->skippableVideoDidPresent();
-}
-
-- (void)skippableVideoWillDismiss {
-    BBAppodeal::_appodeal->skippableVideoWillDismiss();
-}
-
-- (void)skippableVideoDidFailToLoadAd {
-    BBAppodeal::_appodeal->skippableVideoDidFailToLoadAd();
-}
-
-- (void)skippableVideoDidFinish {
-    BBAppodeal::_appodeal->skippableVideoDidFinish();
-}
-
-@end
-
 @implementation RewardedVideoCallbacks
 
 - (void)rewardedVideoDidFinish:(NSUInteger)rewardAmount name:(NSString *)rewardName {
@@ -513,10 +360,6 @@ void BBAppodeal::setInterstitialCallbacks(BBInterstitialCallbacks *callbacks) {
 
 void BBAppodeal::setNonSkippableVideoCallbacks(BBNonSkippableVideoCallbacks *callbacks) {
     nonSkippableVideoCallbacks = callbacks;
-}
-
-void BBAppodeal::setSkippableVideoCallbacks(BBSkippableVideoCallbacks *callbacks) {
-    skippableVideoCallbacks = callbacks;
 }
 
 void BBAppodeal::setRewardedVideoCallbacks(BBRewardedVideoCallbacks *callbacks) {
@@ -582,27 +425,6 @@ void BBAppodeal::nonSkippableVideoDidPresent() {
     nonSkippableVideoCallbacks->onNonSkippableVideoShown();
 }
 
-//skippable video callbacks
-void BBAppodeal::skippableVideoDidLoadAd() {
-    skippableVideoCallbacks->onSkippableVideoLoaded();
-}
-
-void BBAppodeal::skippableVideoDidFinish() {
-    skippableVideoCallbacks->onSkippableVideoFinished();
-}
-
-void BBAppodeal::skippableVideoDidFailToLoadAd() {
-    skippableVideoCallbacks->onSkippableVideoFailedToLoad();
-}
-
-void BBAppodeal::skippableVideoWillDismiss() {
-    skippableVideoCallbacks->onSkippableVideoClosed();
-}
-
-void BBAppodeal::skippableVideoDidPresent() {
-    skippableVideoCallbacks->onSkippableVideoShown();
-}
-
 //rewarded video callbacks
 void BBAppodeal::rewardedVideoDidFinish(NSUInteger rewardAmount, NSString *rewardName) {
     const char *ptr = [rewardName cStringUsingEncoding:NSUTF8StringEncoding];
@@ -632,7 +454,6 @@ void BBAppodeal::initialize(String _appID, int adType) {
     [Appodeal setBannerDelegate:[[BannerCallbacks alloc] init]];
     [Appodeal setInterstitialDelegate:[[InterstitialCallbacks alloc] init]];
     [Appodeal setNonSkippableVideoDelegate:[[NonSkippableVideoCallbacks alloc] init]];
-    [Appodeal setSkippableVideoDelegate:[[SkippableVideoCallbacks alloc] init]];
     [Appodeal setRewardedVideoDelegate:[[RewardedVideoCallbacks alloc] init]];
 }
 
@@ -653,10 +474,6 @@ void BBAppodeal::hide(int adType) {
     [Appodeal hideBanner];
 }
 
-void BBAppodeal::confirm(int adType) {
-    [Appodeal confirmUsage:nativeShowStyleForType(adType)];
-}
-
 bool BBAppodeal::isLoaded(int adType) {
     return [Appodeal isReadyForShowWithStyle:nativeShowStyleForType(adType)];
 }
@@ -673,7 +490,6 @@ void BBAppodeal::setAutoCache(int adType, bool state) {
 void BBAppodeal::disableNetwork(String network) {
     [Appodeal disableNetworkForAdType:AppodealAdTypeBanner name:network.ToNSString()];
     [Appodeal disableNetworkForAdType:AppodealAdTypeInterstitial name:network.ToNSString()];
-    [Appodeal disableNetworkForAdType:AppodealAdTypeSkippableVideo name:network.ToNSString()];
     [Appodeal disableNetworkForAdType:AppodealAdTypeRewardedVideo name:network.ToNSString()];
 }
 
@@ -772,49 +588,15 @@ BBUserSettings *BBAppodeal::GetUserSettings() {
     return _userSettings;
 }
 
-void BBUserSettings::setId(String userId) {
+void BBUserSettings::setUserId(String userId) {
     NSString* userIdString = userId.ToNSString();
     [Appodeal setUserId:userIdString];
-}
-
-void BBUserSettings::setEmail(String email) {
-    NSString* emailString = email.ToNSString();
-    [Appodeal setUserEmail:emailString];
-}
-
-void BBUserSettings::setBirthday(String birthday) {
-    NSString* birthdayString = birthday.ToNSString();
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"dd/MM/yyyy"];
-    NSDate *dte = [dateFormat dateFromString:birthdayString];
-    [Appodeal setUserBirthday:dte];
 }
 
 void BBUserSettings::setAge(int age) {
     [Appodeal setUserAge:(NSUInteger)age];
 }
 
-void BBUserSettings::setInterests(String interests) {
-    NSString* interestsString = interests.ToNSString();
-    [Appodeal setUserInterests:interestsString];
-}
-
 void BBUserSettings::setGender(int gender) {
     [Appodeal setUserGender:convertIntToGender(gender)];
-}
-
-void BBUserSettings::setOccupation(int occupation) {
-    [Appodeal setUserOccupation:convertIntToOccupation(occupation)];
-}
-
-void BBUserSettings::setRelation(int relationship) {
-    [Appodeal setUserRelationship:convertIntToRelation(relationship)];
-}
-
-void BBUserSettings::setSmoking(int smokingAttitude) {
-    [Appodeal setUserSmokingAttitude:convertIntToSmoking(smokingAttitude)];
-}
-
-void BBUserSettings::setAlcohol(int alcoholAttitude) {
-    [Appodeal setUserAlcoholAttitude:convertIntToAlcohol(alcoholAttitude)];
 }
